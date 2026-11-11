@@ -1,121 +1,176 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const MyMasjidApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+// The main app wrapper
+class MyMasjidApp extends StatelessWidget {
+  const MyMasjidApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      debugShowCheckedModeBanner: false,
+      home: const MasjidSelectorScreen(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+// The interactive screen
+class MasjidSelectorScreen extends StatefulWidget {
+  const MasjidSelectorScreen({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MasjidSelectorScreen> createState() => _MasjidSelectorScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _MasjidSelectorScreenState extends State<MasjidSelectorScreen> {
+  // These variables hold the currently selected masjid.
+  // We start with Masjid Negara as the default.
+  String currentImage = 'assets/masjid_negara.jpeg';
+  String masjidName = 'Masjid Negara';
+  String masjidAddress = 'Jalan Perdana, Tasik Perdana, 50480 Kuala Lumpur';
 
-  void _incrementCounter() {
+  // This function updates the UI when a button is pressed
+  void changeMasjid(String imagePath, String name, String address) {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      currentImage = imagePath;
+      masjidName = name;
+      masjidAddress = address;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
+      backgroundColor: Colors.green[50],
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: const Text(
+          'Which Masjid Today?',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        backgroundColor: Colors.green[800],
+        centerTitle: true,
       ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: .center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('You have pushed the button this many times:'),
+            // 1. The name of the masjid
             Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+              masjidName,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: Colors.green[800],
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // 2. The image display with a nice border
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.green[800]!, width: 4),
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 10,
+                    offset: Offset(0, 5),
+                  )
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(11),
+                child: Image.asset(
+                  currentImage,
+                  height: 250,
+                  width: 250,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // 3. The simple address
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: Text(
+                masjidAddress,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 16),
+              ),
+            ),
+            const SizedBox(height: 30),
+
+            // 4. The selection buttons
+            Wrap(
+              spacing: 15,
+              runSpacing: 15,
+              alignment: WrapAlignment.center,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green[800],
+                    padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  ),
+                  onPressed: () => changeMasjid(
+                    'assets/masjid_negara.jpeg',
+                    'Masjid Negara',
+                    'Jalan Perdana, Tasik Perdana, 50480 Kuala Lumpur',
+                  ),
+                  child: const Text('Masjid Negara',
+                      style: TextStyle(color: Colors.white, fontSize: 16)),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.pink[400],
+                    padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  ),
+                  onPressed: () => changeMasjid(
+                    'assets/masjid_putra.jpeg',
+                    'Masjid Putra',
+                    'Persiaran Persekutuan, Presint 1, 62502 Putrajaya',
+                  ),
+                  child: const Text('Masjid Putra',
+                      style: TextStyle(color: Colors.white, fontSize: 16)),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueAccent,
+                    padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  ),
+                  onPressed: () => changeMasjid(
+                    'assets/masjid_biru.jpeg',
+                    'Masjid Sultan Salahuddin Abdul Aziz Shah',
+                    'Persiaran Masjid, Seksyen 14, 40000 Shah Alam, Selangor',
+                  ),
+                  child: const Text('Masjid Biru',
+                      style: TextStyle(color: Colors.white, fontSize: 16)),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.deepOrange,
+                    padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  ),
+                  onPressed: () => changeMasjid(
+                    'assets/masjid_kristal.jpeg',
+                    'Masjid Kristal',
+                    'Taman Tamadun Islam, Pulau Wan Man, 21100 Kuala Terengganu',
+                  ),
+                  child: const Text('Masjid Kristal',
+                      style: TextStyle(color: Colors.white, fontSize: 16)),
+                ),
+              ],
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
       ),
     );
   }
